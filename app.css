@@ -34,10 +34,11 @@ a {
 nav {
 	background-color: var(--primary-color);
 	display: flex;
-	justify-content: space-between;
+	justify-content: center;
 	align-items: center;
 	padding: 10px 20px;
 }
+
 
 .nav .hamburger-menu {
 	display: flex;
@@ -129,4 +130,30 @@ footer {
 	text-align: center;
 
 	background-color: var(--tile-color);
+}
+
+
+@media (min-width: 1024px) { 
+
+
+  /* I need the category row to line up with the question grid exactly */
+  #category-row {
+
+	display: grid;
+	grid-template-columns: repeat(6, 1fr);
+
+	width: 100%;
+
+  };
+
+  #question-grid {
+
+	display: grid;
+	grid-template-columns: repeat(6, 1fr);
+	grid-template-rows: repeat(5, 1fr);
+	gap: 5px;
+	width: 100%;
+  };
+
+  
 }
