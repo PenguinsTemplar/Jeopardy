@@ -175,3 +175,41 @@ function submitAnswer() {
 	// Check for end of game (implementation depends on your game logic)
 	// ...
 }
+
+// ... your existing JavaScript ...
+
+let currentColumn = 0;
+
+function showColumn(columnIndex) {
+	const columnWidth = document.querySelector('.tile').offsetWidth; // Get tile width
+	const scrollAmount = columnIndex * columnWidth;
+
+	// Scroll to the specified column
+	categoryRow.scrollLeft = scrollAmount;
+	questionGrid.scrollLeft = scrollAmount;
+}
+
+// Initial display
+showColumn(currentColumn);
+
+// Touch event handling for swiping (simplified example)
+let touchStartX = 0;
+let touchEndX = 0;
+
+questionGrid.addEventListener('touchstart', (e) => {
+	touchStartX = e.touches[0].clientX;
+});
+
+questionGrid.addEventListener('touchend', (e) => {
+	touchEndX = e.changedTouches[0].clientX;
+
+	if (touchEndX < touchStartX) {
+		// Swipe left
+		currentColumn = Math.min(currentColumn + 1, 5); // 5 is the max column index
+		showColumn(currentColumn);
+	} else if (touchEndX > touchStartX) {
+		// Swipe right
+		currentColumn = Math.max(currentColumn - 1, 0);
+		showColumn(currentColumn);
+	}
+});
