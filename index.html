@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1.0" />
+		<title>Jeopardy Game</title>
+		<link
+			rel="stylesheet"
+			href="app.css" />
+	</head>
+	<body>
+		<header>
+			<nav>
+				<div class="hamburger-menu">
+					<button id="new-game">New Game</button>
+					<a href="/portfolio">Return to Portfolio</a>
+				</div>
+				<h1>Jeopardy!</h1>
+			</nav>
+		</header>
+		<main>
+			<div id="game-board">
+				<div id="category-row"></div>
+				<div id="question-grid"></div>
+			</div>
+		</main>
+		<footer>
+			<div
+				class="player-score"
+				id="player1-score">
+				Player 1: 0
+			</div>
+			<div class="input-response">
+				<input
+					type="text"
+					id="answer-input" />
+				<button id="submit-answer">Submit Answer</button>
+			</div>
+			<div
+				class="player-score"
+				id="player2-score">
+				Player 2: 0
+			</div>
+		</footer>
+		<div id="notifications"></div>
+		<script
+			class=""
+			src="app.js"></script>
+	</body>
+</html>

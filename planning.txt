@@ -1,0 +1,83 @@
+the window will consist of:
+I.HTML
+    A. Title
+        1. Hamburger Menu left
+            a. New Game Button
+            b. Return to Portfolio
+        2. Title centered h1
+    B. Game Board
+        1.Category Row
+        2.Questions Grid
+    C. Game Controls
+        1. 3 part footer
+            a.Player one score 20% on the left
+            b.Interactive question-response section 60%
+            c.Player two score 20% on the right
+        2. Prompt question clickable <a> elements to add the preliminary part of the response "Who is...,What is..."
+        3. Submit answer button
+
+II. CSS
+    A. Root variable colors
+    B. HTML border-box, * before after intheritace
+    C. zero out body, plus font styles
+    D. h1,h2,h3 styling (marign zero to...?)
+    E. A styles for navigation
+    F. Nav/Title bar
+    G. #game-board
+    H. .tile,hover
+    I. #category-row
+        1. Needs .tile class for styling
+        2. 1x 6
+    J. #question-grid
+        1. needs to arranged in rows of 6 columns
+        2. needs to have a 5x6 rows/columns 
+        3. initial points ont he front side of the tile (200,400,600,800,1000)
+        5. Back of the tile should display the question
+        6. Flip animation
+
+III. JS
+    A.categoryArray
+    B.function fetchCategories fetch distinct categories from this api : https://the-trivia-api.com/docs/v2/#tag/Sessions
+        1.get the full distinct list of categories.
+        2.randomly sort them distinct list
+        3.load the first six categories into the categoryArray
+    C.questionArray (nested objects)
+    D.function fetchQuestions, using the categoryArray
+        1.  Retrieve 5 questions for each index value related to the catogoryArray values from the API and push them into the questions array
+        2.  for example, get 5 music questions easy easy medium medium hard, pushing them in the the questionArray, then
+            get 5 history questions, easy easy medium medium hard, and push them in the array, and so on.
+        {
+            "category": "music",
+            "id": "5f9f1b9b0e1b9c0017a5f1a5",
+            "tags": [
+            "france",
+            "geography",
+            "capital_cities",
+            "cities"
+            ],
+            "difficulty": "easy",
+            "regions": [
+            "string"
+            ],
+            "isNiche": true,
+            "question": {
+            "text": "What is the capital of France?"
+            },
+            "correctAnswer": "Paris",
+            "incorrectAnswers": [
+            "London",
+            "Berlin",
+            "Brussels"
+            ],
+            "type": "text_choice"
+        }
+    E.function createTile
+        1. generates a tile div
+        2. if it's a category, it puts the category on the front image
+        3. if it's a question, it puts a point value on the front image
+        4. if it's a question, it puts the question on the back of the image
+        5. onclick event on the tile that ignores the rest of the page
+            -on click toggles a class "front" to "back"
+            -updates turn lock to "true" preventing any tiles from being clicked till the "Submit Answer" button is clicked 
+        6. add the class "category" if it's a category title append tile to the category-row if it's a category
+        7. add the class "question" if it's a question and append tile to the questions-grid if it's a question
