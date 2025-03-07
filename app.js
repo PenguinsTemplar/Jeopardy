@@ -11,15 +11,8 @@ let player1Score = 0;
 let player2Score = 0;
 let currentPlayer = 1;
 let turnLocked = false;
-
-window.onload = () => {
-	console.log(responsePrompts.entries);
-	fetchCategories().then(() => {
-		fetchQuestions().then(() => {
-			createBoard(categoryArray, questionArray);
-		});
-	});
-};
+// window.onload should run the start game function
+window.onload = startGame;
 
 async function fetchCategories() {
 	try {
@@ -83,7 +76,7 @@ function createTile(content, isCategory, questionData) {
 		tile.addEventListener('click', () => {
 			if (turnLocked) return;
 			tile.classList.add('flipped');
-			// turnLocked = true; disabled for now
+			// turnLocked = true; // Disabled for now
 			answerInput.focus();
 		});
 	}
@@ -112,71 +105,8 @@ function createBoard(categoryArray, questionArray) {
 			questionIndex++;
 		}
 	}
+	showColumn(currentColumn);
 }
-
-function startGame() {
-	// Reset game state (you'll need to implement this based on your game logic)
-	// ...
-
-	fetchCategories().then(() => {
-		fetchQuestions().then(() => {
-			createBoard(categoryArray, questionArray);
-		});
-	});
-}
-
-document
-	.querySelector('#submit-answer')
-	.addEventListener('click', submitAnswer);
-
-function submitAnswer() {
-	console.log('Submit Answer');
-	const answer = answerInput.value.trim().toLowerCase();
-	const currentTile = document.querySelector('.tile.flipped');
-	const question = currentTile.querySelector('.back').textContent;
-
-	// Find the correct answer from questionArray (with error handling)
-	const questionObject = questionArray.find((q) => q.question === question);
-	if (!questionObject) {
-		console.error('Question not found in questionArray:', question);
-		return; // Exit the function if the question is not found
-	}
-	const correctAnswer = questionObject.correctAnswer.toLowerCase();
-	console.log('Correct Answer:', correctAnswer);
-
-	// Update #notification instead of responsePrompts
-	const notificationDiv = document.getElementById('notifications');
-
-	if (answer === correctAnswer) {
-		notificationDiv.textContent = `Correct! The answer is: ${correctAnswer}`;
-		if (currentPlayer === 1) {
-			player1Score += parseInt(currentTile.querySelector('.front').textContent);
-			player1ScoreDisplay.textContent = player1Score;
-		} else {
-			player2Score += parseInt(currentTile.querySelector('.front').textContent);
-			player2ScoreDisplay.textContent = player2Score;
-		}
-	} else {
-		notificationDiv.textContent = `Incorrect! The correct answer is: ${correctAnswer}`;
-	}
-
-	// Switch players
-	currentPlayer = currentPlayer === 1 ? 2 : 1;
-
-	// Flip the tile back
-	currentTile.classList.remove('flipped');
-
-	// Unlock for next turn
-	turnLocked = false;
-
-	// Reset input field
-	answerInput.value = '';
-
-	// Check for end of game (implementation depends on your game logic)
-	// ...
-}
-
-// ... your existing JavaScript ...
 
 let currentColumn = 0;
 
@@ -188,9 +118,6 @@ function showColumn(columnIndex) {
 	categoryRow.scrollLeft = scrollAmount;
 	questionGrid.scrollLeft = scrollAmount;
 }
-
-// Initial display
-showColumn(currentColumn);
 
 // Touch event handling for swiping (simplified example)
 let touchStartX = 0;
@@ -213,3 +140,93 @@ questionGrid.addEventListener('touchend', (e) => {
 		showColumn(currentColumn);
 	}
 });
+
+const startButton = document.getElementById('new-game');
+startButton.addEventListener('click', startGame);
+
+function startGame() {
+	console.log('Starting new game...');
+	document.getElementById('p1').classList.add('active');
+	categoryArray = [];
+	questionArray = [];
+	player1Score = 0;
+	player2Score = 0;
+	player1ScoreDisplay.textContent = player1Score;
+	player2ScoreDisplay.textContent = player2Score;
+	currentPlayer = 1;
+	turnLocked = false;
+	document.getElementById('notifications').textContent = '';
+	answerInput.value = '';
+
+	fetchCategories().then(() => {
+		fetchQuestions().then(() => {
+			createBoard(categoryArray, questionArray);
+		});
+	});
+}
+
+const answerButton = document.getElementById('submit-answer');
+answerButton.addEventListener('click', checkAnswer);
+
+function checkAnswer() {
+	console.log('Checking answer...');
+	const answer = answerInput.value.trim().toLowerCase();
+	const flippedTile = document.querySelector('.tile.flipped');
+	const questionText = flippedTile.querySelector('.back').textContent;
+
+	const questionObject = questionArray.find((q) => q.question === questionText);
+
+	if (questionObject) {
+		const correctAnswer = questionObject.correctAnswer.toLowerCase();
+
+		if (answer === correctAnswer) {
+			document.getElementById('notifications').textContent = 'Correct!';
+			if (currentPlayer === 1) {
+				player1Score += parseInt(
+					flippedTile.querySelector('.front').textContent
+				);
+				player1ScoreDisplay.textContent = player1Score;
+			} else {
+				player2Score += parseInt(
+					flippedTile.querySelector('.front').textContent
+				);
+				player2ScoreDisplay.textContent = player2Score;
+			}
+
+			// Clear question text and remove event listener after updating score
+			flippedTile.removeEventListener('click', () => {
+				if (turnLocked) return;
+				tile.classList.add('flipped');
+				turnLocked = true;
+				answerInput.focus();
+			});
+			flippedTile.querySelector('.back').textContent = '';
+		} else {
+			document.getElementById(
+				'notifications'
+			).textContent = `Incorrect! The correct answer was ${correctAnswer}`;
+
+			switchPlayer(); // Call switchPlayer only after a failed answer
+
+			// Clear question text and remove event listener after displaying message
+			flippedTile.removeEventListener('click', () => {
+				if (turnLocked) return;
+				tile.classList.add('flipped');
+				turnLocked = true;
+				answerInput.focus();
+			});
+			flippedTile.querySelector('.back').textContent = '';
+		}
+
+		turnLocked = false;
+		answerInput.value = '';
+	} else {
+		console.error('Question not found in questionArray!');
+	}
+}
+
+function switchPlayer() {
+	currentPlayer = currentPlayer === 1 ? 2 : 1;
+	document.getElementById('p1').classList.toggle('active');
+	document.getElementById('p2').classList.toggle('active');
+}

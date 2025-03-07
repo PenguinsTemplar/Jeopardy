@@ -1,0 +1,50 @@
+startGame
+  resetGameVariables
+    set player scores to 0
+    set currentPlayer to 1
+    set turnLock to false
+    clear notifications
+    reset answer input
+  fetchCategories
+  fetchQuestions
+  createBoard
+    createTile (for each category and question)
+      create tile element
+      create front and back divs
+      set front content
+      if question data exists, set back content
+      if question tile, add click event listener to flipTile
+  showColumn (to display the initial column)
+  
+flipTile (runs on tile click)
+  if tile is already flipped or turnLock is true, return
+  switch the flipped tile's class
+  display the back of the tile
+  focus on answer input
+
+checkAnswer (runs on submit-answer button click)
+  get answer from input
+  find flipped tile
+  get question from flipped tile
+  find question object in questionArray
+  if question object found
+    get correct answer
+    if answer is correct
+      display "Correct!"
+      update score for currentPlayer
+    else
+      display "Incorrect!" and show correct answer
+    switchPlayer
+    flip tile back
+    unlock for next turn
+    clear input field
+  else
+    display error message
+
+switchPlayer
+  highlight current player div (p1 or p2)
+  switch currentPlayer
+
+showColumn (called after swiping or creating the board)
+  calculate scroll amount based on currentColumn
+  scroll categoryRow and questionGrid to the calculated amount
